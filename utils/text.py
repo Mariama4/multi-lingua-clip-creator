@@ -56,3 +56,7 @@ def translate_segments_to(segments, language):
         translated_segments.append(translated_segment)
 
     return translated_segments
+
+
+def translate_to(text, language):
+    return Translator().translate(text, dest=language).text
