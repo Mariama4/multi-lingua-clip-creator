@@ -12,11 +12,13 @@ def get_video_duration(video_path):
     return duration
 
 
-def cut_video(video_path, cut_from, cut_to, output_path):
+def cut_video(video_path, cut_from, cut_to, part, output_path):
     ffmpeg_cmd = [
         'ffmpeg',
         '-i', video_path,
         '-y',
+        '-vf',
+        f"drawtext=text='{part}':fontsize=18:fontcolor=black:box=1:boxcolor=white@1:x=(w-text_w)/2:y=(h-text_h)/2:enable='lt(t,5)'",
         '-ss', cut_from,
         '-to', cut_to,
         '-c:a', 'copy',
@@ -72,7 +74,7 @@ def crop_video_horizontal_to_vertical(video_path, output_path):
             '-i', video_path,
             '-y',  # Overwrite output file if exists
             '-filter_complex',
-            '[0:v]boxblur=40,scale=1280x720,setsar=1[bg];[0:v]scale=1280x720:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=y=(H-h)/2',
+            '[0:v]boxblur=40,scale=1080x1920,setsar=1[bg];[0:v]scale=1080:1920:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=y=(H-h)/2',
             '-c:a', 'copy',  # Copy audio stream without re-encoding
             output_path,
         ]

@@ -23,7 +23,7 @@ def process_video(video_url, languages):
     file_name, _ = os.path.splitext(os.path.basename(file_path_wav))
 
     # Crop the video horizontally to vertical orientation
-    video_vertical = crop_video_horizontal_to_vertical(file_path_webm, f'./temp/horizontal.{video_language}.mp4')
+    video_vertical = crop_video_horizontal_to_vertical(file_path_webm, f'./temp/{file_name}.vertical.{video_language}.mp4')
 
     # Process each language
     for language in languages:
@@ -38,16 +38,17 @@ def process_video(video_url, languages):
 
         # Add subtitles to the horizontal video
         video_vertical_with_subtitles = add_subtitles_to_video(video_vertical, subtitle_file,
-                                                               f'./temp/subtitles.vertical.{language}.mp4')
+                                                               f'./temp/{file_name}.subtitles.vertical.{language}.mp4')
 
         # Add subtitles to the full video
         video_with_subtitles = add_subtitles_to_video(file_path_webm, subtitle_file,
-                                                      f'./temp/subtitles.full.{language}.mp4')
+                                                      f'./temp/{file_name}.subtitles.full.{language}.mp4')
 
         video_vertical_with_watermark = overlay_watermark(video_vertical_with_subtitles, f'./static/watermark.vertical.{language}.jpeg',
                                                           f'./temp/{file_name}.vertical.{language}.mp4')
         video_with_watermark = overlay_watermark(video_with_subtitles, f'./static/watermark.full.{language}.jpeg',
                                                  f'./output/{file_name}.full.{language}.mp4', '[1][0]scale2ref=oh*mdar:ih*0.2[logo][video];[video][logo]overlay')
+
         move_to_output(video_vertical_with_watermark, f'./output/{file_name}.vertical.{language}.mp4')
         move_to_output(video_with_watermark, f'./output/{file_name}.full.{language}.mp4')
 
@@ -57,7 +58,11 @@ def process_video(video_url, languages):
             index = str(i + 1)
             start = str(i * 60)
             end = str((i + 1) * 60)
-            cut_video(f'./output/{file_name}.vertical.{language}.mp4', start, end,
+            if language == 'ru':
+                part = f'{index} часть'
+            else:
+                part = f'{index} part'
+            cut_video(f'./output/{file_name}.vertical.{language}.mp4', start, end, part,
                       f'./output/{file_name}.{index}.vertical.{language}.mp4')
 
     # Clean up temporary files

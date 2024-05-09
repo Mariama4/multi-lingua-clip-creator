@@ -46,8 +46,8 @@ def transcribe(file_path):
         tuple: A tuple containing the detected language (str) and a list of transcribed segments.
     """
     try:
-        # Initialize WhisperModel with 'small' configuration
-        model = WhisperModel("small")
+        # Initialize WhisperModel with 'medium' configuration
+        model = WhisperModel("medium")
 
         # Transcribe audio file
         segments, info = model.transcribe(file_path)
