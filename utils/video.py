@@ -1,8 +1,32 @@
+import math
 import subprocess
 from os import path
+import cv2 as cv
 
 
-def overlay_watermark(video_path, watermark_path, output_path):
+def get_video_duration(video_path):
+    cap = cv.VideoCapture(video_path)
+    fps = cap.get(cv.CAP_PROP_FPS)  # OpenCV v2.x used "CV_CAP_PROP_FPS"
+    frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
+    duration = math.ceil(frame_count / fps)
+    return duration
+
+
+def cut_video(video_path, cut_from, cut_to, output_path):
+    ffmpeg_cmd = [
+        'ffmpeg',
+        '-i', video_path,
+        '-y',
+        '-ss', cut_from,
+        '-to', cut_to,
+        '-c:a', 'copy',
+        output_path,
+    ]
+    subprocess.run(ffmpeg_cmd, check=True)
+    return output_path
+
+
+def overlay_watermark(video_path, watermark_path, output_path, filter_complex='[0:v][1:v]overlay=0:300'):
     """
     Overlay a watermark onto a video using FFmpeg.
 
@@ -20,9 +44,8 @@ def overlay_watermark(video_path, watermark_path, output_path):
             '-i', video_path,
             '-i', watermark_path,
             '-y',  # Overwrite output file if exists
-            '-filter_complex', '[0:v][1:v]overlay=0:300',
+            '-filter_complex', f'{filter_complex}',
             '-c:a', 'copy',  # Copy audio stream without re-encoding
-            '-preset', 'fast',  # Use fast encoding
             output_path,
         ]
         subprocess.run(ffmpeg_cmd, check=True)
@@ -51,7 +74,6 @@ def crop_video_horizontal_to_vertical(video_path, output_path):
             '-filter_complex',
             '[0:v]boxblur=40,scale=1080x1920,setsar=1[bg];[0:v]scale=1080:1920:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=y=(H-h)/2',
             '-c:a', 'copy',  # Copy audio stream without re-encoding
-            '-preset', 'fast',  # Use fast encoding
             output_path,
         ]
         subprocess.run(ffmpeg_cmd, check=True)
@@ -84,9 +106,9 @@ def add_subtitles_to_video(video_path, subtitles_path, output_path):
             'ffmpeg',
             '-i', video_path,
             '-y',  # Overwrite output file if exists
-            '-vf', f"subtitles={subtitles_path}:force_style='FontName=Arial,FontSize=12,PrimaryColour=&Hffffff&,Bold=1,MarginV=+40'",
+            '-vf',
+            f"subtitles={subtitles_path}:force_style='FontName=Arial,FontSize=12,PrimaryColour=&Hffffff&,Bold=1,MarginV=+40'",
             '-c:a', 'copy',  # Copy audio stream without re-encoding
-            '-preset', 'fast',  # Use fast encoding
             output_path,
         ]
         subprocess.run(ffmpeg_cmd, check=True)
