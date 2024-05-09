@@ -81,7 +81,7 @@ def process_video(video_url, languages):
 def main():
     parser = argparse.ArgumentParser(description='Process YouTube video with subtitles and watermark.')
     parser.add_argument('video_url', type=str, help='URL of the YouTube video')
-    parser.add_argument('--languages', nargs='+', default=['ru'],
+    parser.add_argument('--languages', nargs='+', default=['ru', 'en'],
                         help='Languages for subtitles (default: ru, en)')
     args = parser.parse_args()
 
