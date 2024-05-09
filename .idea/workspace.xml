@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="50d19f95-8f48-4ce4-98d5-3a8fee3724ad" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/t.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/video.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +21,20 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Mariama4"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="107b5035-5afc-4fa2-bb18-f054962d5127" />
+        <option name="url" value="https://github.com/Mariama4/multi-lingua-clip-creator.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -49,7 +60,7 @@
     "git-widget-placeholder": "master"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.t">
+  <component name="RunManager" selected="Python.main">
     <configuration name="еуые" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="multi-lingua-clip-creator" />
       <option name="ENV_FILES" value="" />
@@ -163,7 +174,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715210779881</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update">
+      <option name="closed" value="true" />
+      <created>1715257258690</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1715257258690</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
