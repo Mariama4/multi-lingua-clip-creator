@@ -12,15 +12,27 @@ def get_video_duration(video_path):
     return duration
 
 
-def cut_video(video_path, cut_from, cut_to, part, output_path):
+def cut_video(video_path, cut_from, cut_to, output_path):
+    ffmpeg_cmd = [
+        'ffmpeg',
+        '-i', video_path,
+        '-y',
+        '-ss', cut_from,
+        '-to', cut_to,
+        '-c:a', 'copy',
+        output_path,
+    ]
+    subprocess.run(ffmpeg_cmd, check=True)
+    return output_path
+
+
+def print_part_on_video(video_path, part, output_path):
     ffmpeg_cmd = [
         'ffmpeg',
         '-i', video_path,
         '-y',
         '-vf',
-        f"drawtext=text='{part}':fontsize=18:fontcolor=black:box=1:boxcolor=white@1:x=(w-text_w)/2:y=(h-text_h)/2:enable='lt(t,5)'",
-        '-ss', cut_from,
-        '-to', cut_to,
+        f"drawtext=text='{part}':fontsize=48:fontcolor=black:box=1:boxcolor=white@1:x=(w-text_w)/2:y=(h-text_h)/2:enable='lt(t,5)'",
         '-c:a', 'copy',
         output_path,
     ]
@@ -109,7 +121,7 @@ def add_subtitles_to_video(video_path, subtitles_path, output_path):
             '-i', video_path,
             '-y',  # Overwrite output file if exists
             '-vf',
-            f"subtitles={subtitles_path}:force_style='FontName=Arial,FontSize=12,PrimaryColour=&Hffffff&,Bold=1,MarginV=+40'",
+            f"subtitles='{subtitles_path}':force_style='FontName=Arial,FontSize=12,PrimaryColour=&Hffffff&,Bold=1,MarginV=+40'",
             '-c:a', 'copy',  # Copy audio stream without re-encoding
             output_path,
         ]

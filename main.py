@@ -3,10 +3,10 @@ import os
 from math import ceil
 
 from utils.audio import convert_webm_to_wav, transcribe
-from utils.common import download_youtube_video, clear_temp_dir, move_to_output
+from utils.common import download_youtube_video, clear_temp_dir, move_to
 from utils.text import generate_subtitle_file, translate_segments_to
 from utils.video import add_subtitles_to_video, crop_video_horizontal_to_vertical, overlay_watermark, \
-    get_video_duration, cut_video
+    get_video_duration, cut_video, print_part_on_video
 
 
 def process_video(video_url, languages):
@@ -23,7 +23,8 @@ def process_video(video_url, languages):
     file_name, _ = os.path.splitext(os.path.basename(file_path_wav))
 
     # Crop the video horizontally to vertical orientation
-    video_vertical = crop_video_horizontal_to_vertical(file_path_webm, f'./temp/{file_name}.vertical.{video_language}.mp4')
+    video_vertical = crop_video_horizontal_to_vertical(file_path_webm,
+                                                       f'./temp/{file_name}.vertical.{video_language}.mp4')
 
     # Process each language
     for language in languages:
@@ -44,15 +45,18 @@ def process_video(video_url, languages):
         video_with_subtitles = add_subtitles_to_video(file_path_webm, subtitle_file,
                                                       f'./temp/{file_name}.subtitles.full.{language}.mp4')
 
-        video_vertical_with_watermark = overlay_watermark(video_vertical_with_subtitles, f'./static/watermark.vertical.{language}.jpeg',
-                                                          f'./temp/{file_name}.vertical.{language}.mp4')
+        video_vertical_with_watermark = overlay_watermark(video_vertical_with_subtitles,
+                                                          f'./static/watermark.vertical.{language}.jpeg',
+                                                          f'./temp/{file_name}.watermark.subtitles.vertical.{language}.mp4')
         video_with_watermark = overlay_watermark(video_with_subtitles, f'./static/watermark.full.{language}.jpeg',
-                                                 f'./output/{file_name}.full.{language}.mp4', '[1][0]scale2ref=oh*mdar:ih*0.2[logo][video];[video][logo]overlay')
+                                                 f'./temp/{file_name}.watermark.subtitles.full.{language}.mp4',
+                                                 '[1][0]scale2ref=oh*mdar:ih*0.2[logo][video];[video][logo]overlay')
 
-        move_to_output(video_vertical_with_watermark, f'./output/{file_name}.vertical.{language}.mp4')
-        move_to_output(video_with_watermark, f'./output/{file_name}.full.{language}.mp4')
+        move_to(video_vertical_with_watermark,
+                       f'./output/{file_name}.watermark.subtitles.vertical.{language}.mp4')
+        move_to(video_with_watermark, f'./output/{file_name}.watermark.subtitles.full.{language}.mp4')
 
-        seconds = get_video_duration(f'./output/{file_name}.vertical.{language}.mp4')
+        seconds = get_video_duration(f'./output/{file_name}.watermark.subtitles.vertical.{language}.mp4')
 
         for i in range(ceil(seconds // 30 / 2)):
             index = str(i + 1)
@@ -62,8 +66,12 @@ def process_video(video_url, languages):
                 part = f'{index} часть'
             else:
                 part = f'{index} part'
-            cut_video(f'./output/{file_name}.vertical.{language}.mp4', start, end, part,
-                      f'./output/{file_name}.{index}.vertical.{language}.mp4')
+            cutted_video_path = cut_video(f'./output/{file_name}.watermark.subtitles.vertical.{language}.mp4', start,
+                                          end,
+                                          f'./output/{file_name}.{index}.watermark.subtitles.vertical.{language}.mp4')
+            print_part_on_video(cutted_video_path, part,
+                                f'./output/{file_name}.{index}.part.watermark.subtitles.vertical.{language}.mp4')
+            os.remove(cutted_video_path)
 
     # Clean up temporary files
     clear_temp_dir()
@@ -73,7 +81,7 @@ def process_video(video_url, languages):
 def main():
     parser = argparse.ArgumentParser(description='Process YouTube video with subtitles and watermark.')
     parser.add_argument('video_url', type=str, help='URL of the YouTube video')
-    parser.add_argument('--languages', nargs='+', default=['ru', 'en'],
+    parser.add_argument('--languages', nargs='+', default=['ru'],
                         help='Languages for subtitles (default: ru, en)')
     args = parser.parse_args()
 

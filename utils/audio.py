@@ -47,7 +47,7 @@ def transcribe(file_path):
     """
     try:
         # Initialize WhisperModel with 'medium' configuration
-        model = WhisperModel("medium")
+        model = WhisperModel("tiny")
 
         # Transcribe audio file
         segments, info = model.transcribe(file_path)

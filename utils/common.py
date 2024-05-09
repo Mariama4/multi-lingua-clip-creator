@@ -5,7 +5,7 @@ from math import floor
 from yt_dlp import YoutubeDL
 
 
-def move_to_output(file_path, output_path):
+def move_to(file_path, output_path):
     shutil.move(file_path, output_path)
 
 
